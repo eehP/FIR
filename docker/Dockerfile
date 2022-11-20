@@ -13,6 +13,8 @@ RUN apk add --update git \
     virtualenv venv && \
     source venv/bin/activate && \
     find . -name requirements.txt -exec pip install -r {} \; && \
+    git clone https://github.com/certsocietegenerale/FIR.git && \
+    cd FIR && \
     rm -rf .env .git .travis.yml docker Procfile README.md requirements.txt runtime.txt && \
     mv fir/config/installed_apps.txt.sample fir/config/installed_apps.txt && \
     deactivate
