@@ -12,7 +12,7 @@ RUN apk add --update git \
     pip install virtualenv && \
     virtualenv venv && \
     source venv/bin/activate && \
-    git clone https://github.com/certsocietegenerale/FIR.git && \
+    git clone https://github.com/eehp/FIR.git && \
     cd FIR && \
     find . -name requirements.txt -exec pip install -r {} \; && \
     rm -rf .env .git .travis.yml docker Procfile README.md requirements.txt runtime.txt && \
