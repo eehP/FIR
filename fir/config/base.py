@@ -32,6 +32,17 @@ else:
     LOGIN_URL = "/login/"
     LOGOUT_URL = "/logout/"
 
+# values you got from step 2 from your Mirosoft app
+MICROSOFT_AUTH_CLIENT_ID = 'your-client-id-from-apps.dev.microsoft.com'
+MICROSOFT_AUTH_CLIENT_SECRET = 'your-client-secret-from-apps.dev.microsoft.com'
+# Tenant ID is also needed for single tenant applications
+# MICROSOFT_AUTH_TENANT_ID = 'your-tenant-id-from-apps.dev.microsoft.com'
+
+# pick one MICROSOFT_AUTH_LOGIN_TYPE value
+# Microsoft authentication
+# include Microsoft Accounts, Office 365 Enterpirse and Azure AD accounts
+MICROSOFT_AUTH_LOGIN_TYPE = 'ma'
+    
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -92,6 +103,7 @@ if TF_INSTALLED:
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # default
     'incidents.authorization.ObjectPermissionBackend',
+    'microsoft_auth.backends.MicrosoftAuthenticationBackend'
 )
 
 # Absolute filesystem path to the directory that will hold user-uploaded files
@@ -121,7 +133,8 @@ INSTALLED_APPS = (
     'incidents',
     'fir_artifacts',
     'treebeard',
-    'fir_email'
+    'fir_email',
+    'microsoft_auth'
 )
 
 if TF_INSTALLED:
@@ -164,7 +177,8 @@ TEMPLATES = [
                 "django.template.context_processors.media",
                 "django.template.context_processors.static",
                 "django.template.context_processors.request",
-                "django.contrib.messages.context_processors.messages"
+                "django.contrib.messages.context_processors.messages",
+                "microsoft_auth.context_processors.microsoft"
             )
         }
     }
