@@ -105,3 +105,13 @@ INCIDENT_SHOW_ID = env.bool('INCIDENT_SHOW_ID', default=False)
 
 # Incident ID prefix in views and links
 INCIDENT_ID_PREFIX = env('INCIDENT_ID_PREFIX', "FIR-")
+
+# Azure AD Login Environnment variable
+# Use Azure AD as Login
+AZUREAD_LOGON = env.bool('AZUREAD_LOGON', default=False)
+# Set Tenant ID
+TENANT_ID = env.str('TENANT_ID', default="")
+# Set AppBackend ID
+APP_BACK_ID = env.str('APP_BACK_ID', default="")
+# Set Secret App ID
+APP_SECRET_ID = env.str('APP_SECRET_ID', default="")
