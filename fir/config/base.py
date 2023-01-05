@@ -9,7 +9,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__fil
 
 # Django settings for fir project.
 
-
+# 
 ENFORCE_2FA = bool(strtobool(os.getenv('ENFORCE_2FA', 'False')))
 
 tf_error_message = """Django two factor is not installed and ENFORCE_2FA is set to True.
@@ -26,6 +26,28 @@ except ImportError:
 
 
 if TF_INSTALLED:
+    LOGIN_URL = 'two_factor:login'
+    LOGIN_REDIRECT_URL = 'two_factor:profile'
+else:
+    LOGIN_URL = "/login/"
+    LOGOUT_URL = "/logout/"
+
+#Azure AD Logon setting
+ENFORCE_AAD = bool(strtobool(os.getenv('ENFORCE_AAD', 'False')))
+
+aad_error_message = """Django Azure AD is not installed and ENFORCE_AAD is set to True.
+Either set ENFORCE_AAD to False or pip install django-auth-adfs
+"""
+
+try:
+    import django_auth_adfs
+    AAD_INSTALLED = True
+except ImportError:
+    if ENFORCE_AAD:
+        raise RuntimeWarning(aad_error_message)
+    AAD_INSTALLED = False
+
+if AAD_INSTALLED:
     LOGIN_URL = 'two_factor:login'
     LOGIN_REDIRECT_URL = 'two_factor:profile'
 else:
@@ -137,6 +159,8 @@ if TF_INSTALLED:
         INSTALLED_APPS = INSTALLED_APPS + ('otp_yubikey', 'two_factor.plugins.yubikey')
     except ImportError:
         pass
+
+if 
 
 apps_file = os.path.join(BASE_DIR, 'fir', 'config', 'installed_apps.txt')
 if os.path.exists(apps_file):
