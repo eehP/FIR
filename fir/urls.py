@@ -18,7 +18,6 @@ urlpatterns = [
     re_path(r'^dashboard/', include(('incidents.custom_urls.dashboard', 'dashboard'), namespace='dashboard')),
     re_path(r'^admin/', admin.site.urls),
     re_path(r'^$', views.dashboard_main),
-    path('microsoft/', include('microsoft_auth.urls', namespace='microsoft')),
 ]
 
 if TF_INSTALLED:
