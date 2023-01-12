@@ -47,6 +47,26 @@ except ImportError:
         raise RuntimeWarning(aad_error_message)
     AAD_INSTALLED = False
 
+AAD_APP_ID = str(os.getenv('AAD_APP_ID', ''))
+AAD_APP_SECRET = str(os.getenv('AAD_APP_SECRET', ''))
+AAD_TENANT_ID = str(os.getenv('AAD_TENANT_ID', ''))
+
+if AAD_INSTALLED:
+    AUTH_ADFS = {
+        'AUDIENCE': AAD_APP_ID,
+        'CLIENT_ID': AAD_APP_ID,
+        'CLIENT_SECRET': AAD_APP_SECRET,
+        'CLAIM_MAPPING': {'first_name': 'given_name',
+                        'last_name': 'family_name',
+                        'email': 'upn'},
+        'GROUPS_CLAIM': 'roles',
+        'MIRROR_GROUPS': True,
+        'USERNAME_CLAIM': 'upn',
+        'TENANT_ID': AAD_TENANT_ID,
+        'RELYING_PARTY_ID': AAD_TENANT_ID,
+    }
+
+
 if AAD_INSTALLED:
     LOGIN_URL = 'django_auth_adfs:login'
     LOGIN_REDIRECT_URL = '/'
@@ -120,7 +140,7 @@ AUTHENTICATION_BACKENDS = (
     'incidents.authorization.ObjectPermissionBackend'
 )
 if AAD_INSTALLED:
-    AAD_BACKEND = ('django_auth_adfs.backend.AdfsAuthCodeBackend',)
+    AAD_BACKEND = ('django_auth_adfs.backend.AdfsAccessTokenBackend',)
     AUTHENTICATION_BACKENDS = AUTHENTICATION_BACKENDS + AAD_BACKEND
 
 # Absolute filesystem path to the directory that will hold user-uploaded files
