@@ -9,7 +9,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__fil
 
 # Django settings for fir project.
 
-# 
+# Yubikey 2FA Implementation
 ENFORCE_2FA = bool(strtobool(os.getenv('ENFORCE_2FA', 'False')))
 
 tf_error_message = """Django two factor is not installed and ENFORCE_2FA is set to True.
@@ -48,8 +48,8 @@ except ImportError:
     AAD_INSTALLED = False
 
 if AAD_INSTALLED:
-    LOGIN_URL = 'two_factor:login'
-    LOGIN_REDIRECT_URL = 'two_factor:profile'
+    LOGIN_URL = 'django_auth_adfs:login'
+    LOGIN_REDIRECT_URL = '/'
 else:
     LOGIN_URL = "/login/"
     LOGOUT_URL = "/logout/"
@@ -109,12 +109,19 @@ if TF_INSTALLED:
     TF_MIDDLEWARE = ('django_otp.middleware.OTPMiddleware',)
     MIDDLEWARE = MIDDLEWARE + TF_MIDDLEWARE
 
+# You can specify URLs for which login is not enforced by specifying them in the LOGIN_EXEMPT_URLS setting.
+if AAD_INSTALLED:
+    AAD_MIDDLEWARE = ('django_auth_adfs.middleware.LoginRequiredMiddleware',)
+    MIDDLEWARE = MIDDLEWARE + AAD_MIDDLEWARE
 
 # Authentication and authorization backends
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # default
     'incidents.authorization.ObjectPermissionBackend'
 )
+if AAD_INSTALLED:
+    AAD_BACKEND = ('django_auth_adfs.backend.AdfsAuthCodeBackend',)
+    AUTHENTICATION_BACKENDS = AUTHENTICATION_BACKENDS + AAD_BACKEND
 
 # Absolute filesystem path to the directory that will hold user-uploaded files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
@@ -160,7 +167,11 @@ if TF_INSTALLED:
     except ImportError:
         pass
 
-if 
+if AAD_INSTALLED:
+    AAD_APPS = (
+        'django_auth_adfs'
+    )
+    INSTALLED_APPS = INSTALLED_APPS + AAD_APPS
 
 apps_file = os.path.join(BASE_DIR, 'fir', 'config', 'installed_apps.txt')
 if os.path.exists(apps_file):
