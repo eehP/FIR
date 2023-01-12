@@ -2,7 +2,7 @@ from pkgutil import find_loader
 from django.urls import include, re_path
 from django.contrib import admin
 
-from fir.config.base import INSTALLED_APPS, TF_INSTALLED
+from fir.config.base import INSTALLED_APPS, TF_INSTALLED, AAD_INSTALLED
 from incidents import views
 
 
@@ -34,6 +34,9 @@ if TF_INSTALLED:
 else:
     urlpatterns.append(re_path(r'^login/', views.user_login, name='login'))
 
+if AAD_INSTALLED:
+    import udjango_auth_adfs.urls
+    urlpatterns.append(re_path(r'^oauth2/', include('django_auth_adfs.urls')))
 
 for app in INSTALLED_APPS:
     if app.startswith('fir_'):
